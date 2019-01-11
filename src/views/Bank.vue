@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "bank",
   data() {
@@ -21,10 +22,11 @@ export default {
         this.balance += this.money;
       }
     },
-    withdraw() {
+    async withdraw() {
+      const response = await axios.get("mock/service");
       var result = /^\d+/.test(this.money);
       if (result && this.money <= this.balance) {
-        this.balance -= this.money;
+        this.balance -= response.data;
       }
     }
   }

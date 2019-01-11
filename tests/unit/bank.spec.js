@@ -1,6 +1,8 @@
 import { shallowMount } from "@vue/test-utils";
 import Bank from "@/views/Bank.vue";
-
+jest.mock("axios", () => ({
+  get: jest.fn(() => Promise.resolve({ data: 3 }))
+}));
 describe("Bank.vue", () => {
   const wrapper = shallowMount(Bank);
   beforeEach(() => {
@@ -31,16 +33,20 @@ describe("Bank.vue", () => {
     // 存錢的按鈕
     wrapper.find("button.deposit").trigger("click");
     // 期待結餘為10
+
     expect(wrapper.vm.balance).toBe(10);
   });
 
-  it("原本帳戶有 10 元，領出 5 元之後，帳戶餘額變 5 元", () => {
+  it("原本帳戶有 10 元，領出 5 元之後，帳戶餘額變 5 元", done => {
     // 操作的錢
     wrapper.vm.money = 5;
     // 領錢的按鈕
     wrapper.find("button.withdraw").trigger("click");
     // 期待結餘為5
-    expect(wrapper.vm.balance).toBe(5);
+    wrapper.vm.$nextTick(() => {
+      expect(wrapper.vm.balance).toBe(5);
+      done();
+    });
   });
 
   it("原本帳戶有 10 元，試圖領出 20 元，帳戶餘額還是 10 元，但無法領出（餘額不足）", () => {

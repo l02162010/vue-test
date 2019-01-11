@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import DisplayBalance from "@/components/DisplayBalance.vue";
 import Withdraw from "@/components/Withdraw.vue";
 import Deposit from "@/components/Deposit.vue";
@@ -30,10 +31,12 @@ export default {
         this.balance -= this.money;
       }
     },
-    deposit() {
+    async deposit() {
+      const response = await axios.get("mock/service");
       var result = /^\d+/.test(this.money);
       if (result && this.money >= 0) {
-        this.balance += this.money;
+        console.log(response);
+        this.balance += response.data;
       }
     }
   }
